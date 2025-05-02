@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Bell, Settings } from 'lucide-react';
+import Sidebar from "./Sidebar";
 
-export default function HomePage() {
+export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
 
@@ -24,18 +25,12 @@ export default function HomePage() {
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
-      <aside className="fixed top-0 left-0 h-screen bg-[#101d3d] text-white w-60 p-6 z-30">
-        <div className="space-y-10">
-          <div className="text-2xl font-bold">Home</div>
-          <div className="text-lg">Filters</div>
-          <div className="text-lg">Profile</div>
-        </div>
-      </aside>
+      <Sidebar />
 
-      {/* Main Content */}
-      <main className={`ml-60 flex-1 p-8 overflow-y-auto transition duration-300 ${isModalOpen ? 'blur-sm' : ''}`}>
+      {/* Main content */}
+      <div className="ml-60 flex-1 flex flex-col">
         {/* Header */}
-        <header className="sticky top-0 bg-gray-100 z-20 p-4">
+        <header className="fixed top-0 left-60 right-0 bg-[#f3f4f6] z-20 p-4">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-4xl font-bold text-[#1E2A4A] mb-1">Smart Traffic Dashboard</h1>
@@ -50,69 +45,72 @@ export default function HomePage() {
           </div>
         </header>
 
-        {/* Live Traffic Feed - Videos */}
-        <section className="bg-white rounded-xl p-6 shadow mb-8 mt-6">
-          <h2 className="text-2xl font-semibold text-blue-800 mb-4">Live Traffic Feed</h2>
-          <div className="grid grid-cols-2 grid-rows-2 gap-0 w-full overflow-hidden rounded-xl">
-            {videoURLs.map((url, index) => (
-              <video
-                key={index}
-                src={url}
-                className="w-full h-64 object-cover cursor-pointer"
-                autoPlay
-                loop
-                muted
-                playsInline
-                onClick={() => {
-                  setSelectedVideo(url);
-                  setIsModalOpen(true);
-                }}
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* Info Cards */}
-        <div className="grid grid-cols-2 gap-6">
-          {/* Traffic Light Status */}
-          <div className="bg-white rounded-xl p-6 shadow">
-            <h3 className="text-blue-800 text-xl font-semibold mb-4">Traffic Light Status</h3>
-            {[1, 2, 3, 4].map((intersection) => (
-              <div key={intersection} className="flex justify-between mb-3 items-center">
-                <span>Intersection {intersection}</span>
-                <img
-                  src={`/assets/light/${currentGreen === `intersection_${intersection}` ? 'green.png' : 'red.png'}`}
-                  alt={currentGreen === `intersection_${intersection}` ? 'Green Light' : 'Red Light'}
-                  className="w-12 h-12 object-contain"
+        {/* Content Area */}
+        <main className={`mt-32 p-8 flex-1 overflow-y-auto transition duration-300 ${isModalOpen ? 'blur-sm' : ''}`}>
+          {/* Live Traffic Feed */}
+          <section className="bg-white rounded-xl p-6 shadow mb-8">
+            <h2 className="text-2xl font-semibold text-blue-800 mb-4">Live Traffic Feed</h2>
+            <div className="grid grid-cols-2 grid-rows-2 gap-0 w-full overflow-hidden rounded-xl">
+              {videoURLs.map((url, index) => (
+                <video
+                  key={index}
+                  src={url}
+                  className="w-full h-64 object-cover cursor-pointer"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  onClick={() => {
+                    setSelectedVideo(url);
+                    setIsModalOpen(true);
+                  }}
                 />
-              </div>
-            ))}
+              ))}
+            </div>
+          </section>
+
+          {/* Info Cards */}
+          <div className="grid grid-cols-2 gap-6">
+            {/* Traffic Light Status */}
+            <div className="bg-white rounded-xl p-6 shadow">
+              <h3 className="text-blue-800 text-xl font-semibold mb-4">Traffic Light Status</h3>
+              {[1, 2, 3, 4].map((intersection) => (
+                <div key={intersection} className="flex justify-between mb-3 items-center">
+                  <span>Intersection {intersection}</span>
+                  <img
+                    src={`/assets/light/${currentGreen === `intersection_${intersection}` ? 'green.png' : 'red.png'}`}
+                    alt={currentGreen === `intersection_${intersection}` ? 'Green Light' : 'Red Light'}
+                    className="w-12 h-12 object-contain"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Vehicle Count */}
+            <div className="bg-white rounded-xl p-6 shadow">
+              <h3 className="text-blue-800 text-xl font-semibold mb-4">Vehicle Count</h3>
+              {[1, 2, 3, 4].map((intersection) => (
+                <div key={intersection} className="flex justify-between mb-10">
+                  <span>Intersection {intersection}</span>
+                  <span className="font-medium">{vehicleCounts[`intersection_${intersection}`]}</span>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Vehicle Count */}
-          <div className="bg-white rounded-xl p-6 shadow">
-            <h3 className="text-blue-800 text-xl font-semibold mb-4">Vehicle Count</h3>
-            {[1, 2, 3, 4].map((intersection) => (
-              <div key={intersection} className="flex justify-between mb-10">
-                <span>Intersection {intersection}</span>
-                <span className="font-medium">{vehicleCounts[`intersection_${intersection}`]}</span>
-              </div>
-            ))}
+          {/* Traffic Trends */}
+          <div className="bg-white rounded-xl p-6 shadow mt-8">
+            <h3 className="text-blue-800 text-xl font-semibold mb-4">Traffic Trends</h3>
+            <img
+              src="/assets/graph/graph1.png"
+              alt="Traffic Trends Graph"
+              className="w-full h-64 object-contain"
+            />
           </div>
-        </div>
+        </main>
+      </div>
 
-        {/* Traffic Trends */}
-        <div className="bg-white rounded-xl p-6 shadow mt-8">
-          <h3 className="text-blue-800 text-xl font-semibold mb-4">Traffic Trends</h3>
-          <img
-            src="/assets/graph/graph1.png"
-            alt="Traffic Trends Graph"
-            className="w-full h-64 object-contain"
-          />
-        </div>
-      </main>
-
-      {/* Modal for Video */}
+      {/* Modal */}
       {isModalOpen && selectedVideo && (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-md flex items-center justify-center z-50">
           <div className="relative">
