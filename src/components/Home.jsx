@@ -11,6 +11,14 @@ export default function HomePage() {
 
   const currentGreen = 'lane_2'; // Example: lane_2 is green
 
+  // Video URLs from external sources
+  const videoURLs = [
+    "https://videos.pexels.com/video-files/2109463/2109463-uhd_2560_1440_30fps.mp4",
+    "https://videos.pexels.com/video-files/3727445/3727445-sd_640_360_30fps.mp4",
+    "https://media.istockphoto.com/id/1419468638/video/101-freeway-traffic-in-los-angeles-close.mp4?s=mp4-640x640-is&k=20&c=NvHDZFj19jdlMIrLxOotWRWQsJFBLphel9kvJu96Bng=",
+    "https://videos.pexels.com/video-files/1721294/1721294-sd_640_360_25fps.mp4"
+  ];
+
   return (
     <div className="flex min-h-screen bg-gray-100">
       {/* Sidebar */}
@@ -36,26 +44,18 @@ export default function HomePage() {
 
         {/* Videos Grid */}
         <div className="grid grid-cols-2 gap-6 mb-8">
-          <video
-            src="/assets/lane1.mp4"
-            className="rounded shadow w-full h-64 object-cover"
-            autoPlay loop muted playsInline
-          />
-          <video
-            src="/assets/lane2.mp4"
-            className="rounded shadow w-full h-64 object-cover"
-            autoPlay loop muted playsInline
-          />
-          <video
-            src="/assets/lane3.mp4"
-            className="rounded shadow w-full h-64 object-cover"
-            autoPlay loop muted playsInline
-          />
-          <video
-            src="/assets/lane4.mp4"
-            className="rounded shadow w-full h-64 object-cover"
-            autoPlay loop muted playsInline
-          />
+          {videoURLs.map((url, index) => (
+            <video
+              key={index}
+              src={url}
+              className="rounded shadow w-full h-64 object-cover"
+              autoPlay
+              loop
+              muted
+              playsInline
+              controls={false}
+            />
+          ))}
         </div>
 
         {/* Info Cards */}
@@ -66,11 +66,13 @@ export default function HomePage() {
             {[1, 2, 3, 4].map((lane) => (
               <div key={lane} className="flex justify-between mb-3">
                 <span>Lane {lane}</span>
-                <span className={`text-sm px-3 py-1 rounded-full font-medium ${
-                  currentGreen === `lane_${lane}`
-                    ? 'bg-green-200 text-green-800'
-                    : 'bg-red-200 text-red-800'
-                }`}>
+                <span
+                  className={`text-sm px-3 py-1 rounded-full font-medium ${
+                    currentGreen === `lane_${lane}`
+                      ? 'bg-green-200 text-green-800'
+                      : 'bg-red-200 text-red-800'
+                  }`}
+                >
                   {currentGreen === `lane_${lane}` ? 'Green' : 'Red'}
                 </span>
               </div>
