@@ -1,110 +1,94 @@
-// home.jsx
-import React, { useEffect, useState } from 'react';
-import { getDatabase, ref, onValue } from 'firebase/database';
+import React from 'react';
+import { Bell, Settings } from 'lucide-react';
 
-
-export default function Home() {
-  const [lightStatus, setLightStatus] = useState({});
-  const [vehicleCount, setVehicleCount] = useState({});
-
-  useEffect(() => {
-    const db = getDatabase();
-
-    const lightRef = ref(db, 'trafficLights');
-    const vehicleRef = ref(db, 'vehicleCounts');
-
-    // Listen for traffic light updates
-    onValue(lightRef, (snapshot) => {
-      const data = snapshot.val();
-      setLightStatus(data);
-    });
-
-    // Listen for vehicle count updates
-    onValue(vehicleRef, (snapshot) => {
-      const data = snapshot.val();
-      setVehicleCount(data);
-    });
-  }, []);
-
-  const getLightColor = (status) => {
-    switch (status) {
-      case 'green': return 'bg-green-400';
-      case 'red': return 'bg-red-400';
-      default: return 'bg-gray-300';
-    }
+export default function HomePage() {
+  const vehicleCounts = {
+    lane_1: 12,
+    lane_2: 9,
+    lane_3: 15,
+    lane_4: 7,
   };
 
-  return (
-    <div className="flex h-screen">
-      {/* Sidebar */}
-      <div className="bg-blue-900 text-white w-64 p-6 flex flex-col rounded-r-3xl">
-        <h2 className="text-2xl font-bold mb-10">Smart Traffic Dashboard</h2>
-        <ul className="space-y-6 text-lg">
-          <li className="text-white font-semibold">Home</li>
-          <li className="opacity-70">Filters</li>
-          <li className="opacity-70">Profile</li>
-        </ul>
-      </div>
+  const currentGreen = 'lane_2'; // Example: lane_2 is green
 
-      {/* Main content */}
-      <div className="flex-1 p-8 overflow-y-auto">
-        <header className="flex justify-between items-center mb-6">
+  return (
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <aside className="bg-[#101d3d] text-white w-60 p-6 space-y-10">
+        <div className="text-2xl font-bold">Home</div>
+        <div className="text-lg">Filters</div>
+        <div className="text-lg">Profile</div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 p-8 overflow-y-auto">
+        {/* Header */}
+        <header className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-3xl font-semibold text-gray-800">Smart Traffic Dashboard</h1>
-            <p className="text-gray-500">Data for April 2025</p>
+            <h1 className="text-4xl font-bold text-[#1E2A4A] mb-1">Smart Traffic Dashboard</h1>
+            <p className="text-gray-600 text-lg">Data for April 2025</p>
           </div>
-          <div className="flex space-x-4">
-            <button className="relative">
-              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
-              <svg className="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405M19 13V8a7 7 0 10-14 0v5l-1.405 1.405A2.032 2.032 0 004 19h16a2.032 2.032 0 00.405-1.595L19 13z" />
-              </svg>
-            </button>
-            <svg className="w-6 h-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m0 14v1m8.485-8.485l-.707.707M4.222 19.778l-.707-.707M4 12H3m18 0h1M4.222 4.222l.707.707M19.778 4.222l-.707.707" />
-            </svg>
+          <div className="flex gap-4">
+            <Bell className="text-gray-700" />
+            <Settings className="text-gray-700" />
           </div>
         </header>
 
-        <div>
-          <h2 className="text-xl font-semibold text-gray-700 mb-4">Live Traffic Feed</h2>
-          <div className="grid grid-cols-2 gap-4 mb-8">
-            {[1, 2, 3, 4].map((n) => (
-              <Image
-                key={n}
-                src="/traffic-placeholder.jpg"
-                alt={`Traffic feed ${n}`}
-                width={400}
-                height={200}
-                className="rounded shadow"
-              />
+        {/* Videos Grid */}
+        <div className="grid grid-cols-2 gap-6 mb-8">
+          <video
+            src="/assets/lane1.mp4"
+            className="rounded shadow w-full h-64 object-cover"
+            autoPlay loop muted playsInline
+          />
+          <video
+            src="/assets/lane2.mp4"
+            className="rounded shadow w-full h-64 object-cover"
+            autoPlay loop muted playsInline
+          />
+          <video
+            src="/assets/lane3.mp4"
+            className="rounded shadow w-full h-64 object-cover"
+            autoPlay loop muted playsInline
+          />
+          <video
+            src="/assets/lane4.mp4"
+            className="rounded shadow w-full h-64 object-cover"
+            autoPlay loop muted playsInline
+          />
+        </div>
+
+        {/* Info Cards */}
+        <div className="grid grid-cols-2 gap-6">
+          {/* Traffic Light Status */}
+          <div className="bg-white rounded-xl p-6 shadow">
+            <h3 className="text-blue-800 text-xl font-semibold mb-4">Traffic Light Status</h3>
+            {[1, 2, 3, 4].map((lane) => (
+              <div key={lane} className="flex justify-between mb-3">
+                <span>Lane {lane}</span>
+                <span className={`text-sm px-3 py-1 rounded-full font-medium ${
+                  currentGreen === `lane_${lane}`
+                    ? 'bg-green-200 text-green-800'
+                    : 'bg-red-200 text-red-800'
+                }`}>
+                  {currentGreen === `lane_${lane}` ? 'Green' : 'Red'}
+                </span>
+              </div>
             ))}
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
-            <div className="bg-white p-4 rounded shadow">
-              <h3 className="text-lg font-semibold text-blue-800 mb-2">Traffic Light Status</h3>
-              {Object.entries(lightStatus).map(([intersection, status]) => (
-                <div key={intersection} className="flex justify-between items-center py-1">
-                  <span>{intersection}</span>
-                  <span className={`w-4 h-4 rounded-full ${getLightColor(status)}`}></span>
-                  <span className="capitalize text-sm text-gray-600">{status}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="bg-white p-4 rounded shadow">
-              <h3 className="text-lg font-semibold text-blue-800 mb-2">Vehicle Count</h3>
-              {Object.entries(vehicleCount).map(([intersection, count]) => (
-                <div key={intersection} className="flex justify-between py-1">
-                  <span>{intersection}</span>
-                  <span className="font-medium">{count}</span>
-                </div>
-              ))}
-            </div>
+          {/* Vehicle Count */}
+          <div className="bg-white rounded-xl p-6 shadow">
+            <h3 className="text-blue-800 text-xl font-semibold mb-4">Vehicle Count</h3>
+            {[1, 2, 3, 4].map((lane) => (
+              <div key={lane} className="flex justify-between mb-3">
+                <span>Lane {lane}</span>
+                <span className="font-medium">{vehicleCounts[`lane_${lane}`]}</span>
+              </div>
+            ))}
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
